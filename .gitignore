@@ -1,0 +1,8 @@
+*.jl.cov
+*.jl.mem
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+.vscode/
+!docs/anh_ket_qua/
