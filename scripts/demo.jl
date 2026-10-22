@@ -5,8 +5,8 @@ include("../src/Kruskal.jl")
 using .Kruskal
 function chay_thuc_nghiem()
     println("="^60)
-    println("     CHUONG TRINH MINH HOA THUAT TOAN KRUSKAL (DT081)")
-    println("     Sinh vien: Nguyen Nhu Toan - MSSV: N24DCDT097")
+    println("     CHAY MO PHONG MINH HOA THUAT TOAN KRUSKAL (DT081)")
+    println("     Ho Va Ten Sinh Vien: Nguyen Nhu Toan - MSSV: N24DCDT097")
     println("="^60)
     # Đồ thị thực nghiệm mẫu gồm 6 đỉnh và 9 cạnh
 so_dinh = 6
@@ -26,7 +26,7 @@ canh_dau_vao = [
     ds_canh = kiem_tra_dau_vao(so_dinh, canh_dau_vao)
     println("  -> So dinh: ", so_dinh)
     println("  -> So canh hop le doc duoc: ", length(ds_canh))
-    println("n[BUOC 2] SAP XEP CAC CANH TANG DAN THEO TUNG TRONG SO (Insertion Sort):")
+    println("\n[BUOC 2] SAP XEP CAC CANH TANG DAN THEO TUNG TRONG SO (Insertion Sort):")
     sap_xep_canh!(ds_canh)
     for c in ds_canh
         println("     Canh (", c.u, ", ", c.v, ") co trong so w = ", c.w)
