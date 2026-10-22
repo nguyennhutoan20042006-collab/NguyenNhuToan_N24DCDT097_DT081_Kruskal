@@ -1,5 +1,5 @@
 module Kruskal
-export Canh, TapChaCon, kiem_tra_dau_vao
+export Canh, TapChaCon, kiem_tra_dau_vao, tim!, hop!
 # Khối 1: Định Nghĩa các cấu trúc dữ liệu cơ bản 
 # cấu trúc lưu thông tincuar 1 cạnh trong đồ thị vô hướng.
 # Dùng "struct" bất biến ( immutable) vì sau khi đọc cạnh thì 9u,vư) không thay đổi
@@ -76,5 +76,35 @@ function kiem_tra_dau_vao(n::Integer, canh_raw)
 end
 return ds_canh
 end
+# Khối 3: CÁC THAO TÁC CỐT LÕI CỦA TẬP CHA CON (DSU)
+"""
+    tim!(cha::Vector{Int}, x::Integer)
+Tìm đỉnh đại diện của tập hợp chứa x với kỹ thuật NÉN Đường đi ( Path Compression). Khi đệ quy tìm gốc, gán trực tiếp cha[x] = gốc để các lần tìm sau chỉ tốn o(1)
+"""
+function tim!(cha::Vector{Int}, x::Integer)
+    if cha[x] == x
+        return Int(x)
+    end
+    # Kỹ thuật nén đường đi: gán cha của x trỏ thẳng lên đại diện gốc cao nhất
+    cha[x] = tim!(cha, cha[x])
+    return cha[x]
+end
+tim!(dsu::TapChaCon, x::Integer) = tim!(dsu.cha, x)
+"""
+    hop!(cha::Vector{Int}, u::Integer, v::Integer)
+Hợp hai tập hợp chứa đỉnh u và v:
+- nếu u và v cùng có gốc đại diện: việc nối cạnh (u,v) tạo chu trình -> trả về false.
+- nếu khác gốc đại diện : gán cha của gốc u bằng gốc v -> trả về true.
+"""
+function hop!(cha::Vector{Int}, u::Integer, v::Integer)
+    goc_u = tim!(cha, u)
+    goc_v = tim!(cha, v)
+    if goc_u == goc_v
+        return false     # đã cùng thành phần liên thông, tạo chu trình -> bỏ cạnh 
+    end
+    cha[goc_u] = goc_v    # nối 2 cây lại với nhau -> nhận cạnh
+    return true
+end
+hop!(dsu::TapChaCon, u::Integer, v::Integer) = hop!(dsu.cha, u, v)
+end     # module Kruskal
 
-end # module kruskal
