@@ -1,5 +1,5 @@
 module Kruskal
-export Canh, TapChaCon, kiem_tra_dau_vao, tim!, hop!, sap_xep_canh!, kiem_tra_cay_mst
+export Canh, TapChaCon, kiem_tra_dau_vao, tim!, hop!, sap_xep_canh!, kiem_tra_cay_mst, kruskal
 # Khối 1: Định Nghĩa các cấu trúc dữ liệu cơ bản 
 # cấu trúc lưu thông tincuar 1 cạnh trong đồ thị vô hướng.
 # Dùng "struct" bất biến ( immutable) vì sau khi đọc cạnh thì 9u,vư) không thay đổi
@@ -173,6 +173,51 @@ function kiem_tra_cay_mst(n::Integer, canh_chon::Vector{Canh})
     end
     return true
     
+end
+
+# KHỐI 6: HÀM GIẢI THUẬT KRUSKAL CHÍNH
+"""
+    kruskal(n::Integer, canh_raw)
+
+Thực thi thuật toán Kruskal tìm cây bao trùm nhỏ nhất (MST):
+- Đầu vào: Số đỉnh n, danh sách cạnh thô [(u, v, w), ...]
+- Trả về: Tuple gồm (tong_trong_so::Int, canh_cay::Vector{Canh})
+Nếu đồ thị không liên thông, ném ngoại lệ ErrorException.
+"""
+function kruskal(n::Integer, canh_raw)
+    # Bước 1: Kiểm tra và chuẩn hóa dữ liệu đầu vào
+    ds_canh = kiem_tra_dau_vao(n, canh_raw)
+    # Trường hợp đặc biệt: đồ thị 1 đỉnh
+    if n == 1
+        return (0, Canh[])
+        
+    end
+    # Bước 2: Sắp xếp các cạnh tăng dần theo trọng số (Insertion Sort)
+    sap_xep_canh!(ds_canh)
+    # Bước 3: Khởi tạo tập cha con DSU và các biến chứa kết quả
+    dsu = TapChaCon(n)
+    canh_cay = Canh[]
+    tong_trong_so = 0
+    # Bước 4: Duyệt qua từng cạnh đã sắp xếp theo chiến lược tham lam
+    for c in ds_canh
+        da_hop_nhat = hop!(dsu, c.u, c.v)
+        if da_hop_nhat
+            push!(canh_cay, c)
+            tong_trong_so = tong_trong_so + c.w
+            # Dừng sớm khi đã gom đủ n - 1 cạnh của cây bao trùm
+            if length(canh_cay) == n - 1
+                break
+                
+            end
+        end
+        
+    end
+    # Bước 5: Kiểm tra tính liên thông toàn vẹn của cây
+    if  !kiem_tra_cay_mst(n, canh_cay)
+        throw(ErrorException("do thi khong lien thong, khong ton tai cay bao trum"))
+        
+    end
+    return (tong_trong_so, canh_cay)
 end
 end     # module Kruskal
 
