@@ -58,3 +58,24 @@ end
     @test ds[4] == Canh(2, 4, 5)
 
 end
+
+@testset "3. kiem thu thuat toan Kruskal va kiem tra MST" begin
+    # Test 3.1: Truong hop bien - Do thi 1 dinh
+    ts_1, mst_1 = kruskal(1, [])
+    @test ts_1 == 0
+    @test length(mst_1) == 0
+    @test kiem_tra_cay_mst(1, mst_1) == true
+    # Test 3.2: Do thi tieu chuan 4 dinh, 5 canh
+    canh_chuan = [(1, 2, 1), (2, 3, 2), (3, 4, 3), (1, 4, 10), (2, 4, 5)]
+    ts_4, mst_4 = kruskal(4, canh_chuan)
+    @test ts_4 == 6
+    @test length(mst_4) == 3
+    @test kiem_tra_cay_mst(4,mst_4) == true
+    @test mst_4 == [Canh(1, 2, 1), Canh(2, 3, 2), Canh(3, 4, 3)]
+    # Test 3.3: Do thi khong lien thong (cac dinh bi tach roi) -> nem ngoai le
+    canh_ngat_quang = [(1, 2, 3),(3, 4, 4)]
+    @test_throws ErrorException kruskal(4, canh_ngat_quang)
+    # Test 3.4: Kiem tra cac tap canh khong hop le trong kiem_tra_cay_mst
+    @test kiem_tra_cay_mst(3, [Canh(1, 2, 1)]) == false     # Thieu canh (can 2 canh)
+    @test kiem_tra_cay_mst(3, [Canh(1, 2, 1), Canh(2, 3, 2), Canh(1, 3, 3)]) == false     # Co chu trinh
+end
