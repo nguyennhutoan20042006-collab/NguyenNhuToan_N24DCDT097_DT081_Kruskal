@@ -1,5 +1,5 @@
 module Kruskal
-export Canh, TapChaCon, kiem_tra_dau_vao, tim!, hop!, sap_xep_canh!
+export Canh, TapChaCon, kiem_tra_dau_vao, tim!, hop!, sap_xep_canh!, kiem_tra_cay_mst
 # Khối 1: Định Nghĩa các cấu trúc dữ liệu cơ bản 
 # cấu trúc lưu thông tincuar 1 cạnh trong đồ thị vô hướng.
 # Dùng "struct" bất biến ( immutable) vì sau khi đọc cạnh thì 9u,vư) không thay đổi
@@ -143,6 +143,36 @@ function sap_xep_canh!(ds::Vector{Canh})
     ds[j + 1] = khoa
     end
     return ds
+end
+# KHỐI 5: HÀM KIỂM TRA TÍNH HỢP LỆ CỦA CÂY BAO TRÙM (MST VALIDATOR)
+"""
+    kiem_tra_cay_mst(n::Integer, canh_chon::Vector{Canh})
+
+Kiểm tra tập cạnh được chọn có tạo thành một cây bao trùm hợp lệ hay không:
+- Đồ thị n đỉnh phải có đúng n - 1 cạnh (với n >= 1).
+- Tập cạnh được chọn không được chứa chu trình.
+"""
+function kiem_tra_cay_mst(n::Integer, canh_chon::Vector{Canh})
+    # Trường hợp đặc biệt: đồ thị 1 đỉnh thì cây không có cạnh nào
+    if n == 1
+        return length(canh_chon) == 0
+    end
+    # Điều kiện 1: Đồ thị n đỉnh bắt buộc phải có đúng n - 1 cạnh
+    if length(canh_chon) != n - 1
+        return false
+    end
+    # Điều kiện 2: Kiểm tra độc lập tính không chu trình bằng DSU phụ
+
+    dsu_phu = TapChaCon(n)
+    for c in canh_chon
+        da_noi_duoc = hop!(dsu_phu, c.u, c.v)
+        if !da_noi_duoc
+            return false     # xuất hiện chu trình nội bộ -> không phải cây
+        end
+        
+    end
+    return true
+    
 end
 end     # module Kruskal
 
