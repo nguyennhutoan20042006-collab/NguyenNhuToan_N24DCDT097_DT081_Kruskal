@@ -1,5 +1,5 @@
 module Kruskal
-export Canh, TapChaCon, kiem_tra_dau_vao, tim!, hop!
+export Canh, TapChaCon, kiem_tra_dau_vao, tim!, hop!, sap_xep_canh!
 # Khối 1: Định Nghĩa các cấu trúc dữ liệu cơ bản 
 # cấu trúc lưu thông tincuar 1 cạnh trong đồ thị vô hướng.
 # Dùng "struct" bất biến ( immutable) vì sau khi đọc cạnh thì 9u,vư) không thay đổi
@@ -106,5 +106,43 @@ function hop!(cha::Vector{Int}, u::Integer, v::Integer)
     return true
 end
 hop!(dsu::TapChaCon, u::Integer, v::Integer) = hop!(dsu.cha, u, v)
+# KHỐI 4: THUẬT TOÁN SẮP XẾP CẠNH (SẮP XẾP CHÈN TRỰC TIẾP)
+"""
+    sap_xep_canh!(ds::Vector{Canh})
+
+Sắp xếp danh sách cạnh tăng dần theo tiêu chí:
+1. Trọng số w tăng dần.
+2. Nếu cùng trọng số w, đỉnh u tăng dần.
+3. Nếu cùng trọng số w và đỉnh u, đỉnh v tăng dần.
+Sử dụng thuật toán sắp xếp chèn trực tiếp cơ bản (Insertion Sort).
+"""
+function sap_xep_canh!(ds::Vector{Canh})
+    m = length(ds)
+    # Duyệt từ phần tử thứ 2 đến phần tử cuối cùng
+    for i in 2:m
+        khoa = ds[i]
+        j = i - 1
+     # Dời các phần tử đứng trước lớn hơn 'khoa' về phía sau một vị trí
+     while j >= 1
+        can_doi_cho = false
+        if ds[j].w > khoa.w
+            can_doi_cho = true
+        elseif ds[j].w == khoa.w && ds[j].u > khoa.u
+            can_doi_cho = true
+        elseif ds[j].w == khoa.w && ds[j].u == khoa.u && ds[j].v > khoa.v
+            can_doi_cho = true
+        end
+        if can_doi_cho
+            ds[j + 1] = ds[j]
+            j = j - 1
+        else
+            break
+        end
+     end
+    # Đặt phần tử khóa vào đúng vị trí tìm được
+    ds[j + 1] = khoa
+    end
+    return ds
+end
 end     # module Kruskal
 
