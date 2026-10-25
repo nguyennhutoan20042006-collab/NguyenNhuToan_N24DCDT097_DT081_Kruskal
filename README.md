@@ -35,3 +35,42 @@ Nguyennhutoan_DT081_Kruskal/
 │   └── Kruskal.jl                                  # Module mã nguồn cốt lõi (DSU, Insertion Sort, Kruskal)
 └── test/
     └── runtests.jl                                 # Bộ kiểm thử tự động 34 ca kiểm thử độc lập
+
+
+    ---
+
+# 3. NHẬT KÝ PHÁT TRIỂN VÀ CÁC LỖI KỸ THUẬT ĐÃ VƯỢT QUA
+
+Trong quá trình trực tiếp thiết kế, cài đặt và kiểm thử giải thuật trên ngôn ngữ Julia (v1.12.6), tác giả đã ghi nhận và tự khắc phục các nhóm lỗi thực tế:
+
+# Lỗi cú pháp và hệ thống quy ước của Julia
+
+- Cú pháp chú thích:** Ban đầu gõ nhầm comment kiểu C/C++ (`//`) thay vì ký tự `#` của Julia, khiến trình biên dịch hiểu nhầm là phép chia.
+
+- Quy ước kiểu dữ liệu:** Nhầm lẫn kiểu `int`, `vector{int}` thay vì chữ hoa đầu `Int`, `Vector{Int}`, gây lỗi `UndefVarError`.
+
+- Quy tắc đặt tên biến:** Dùng dấu gạch nối trong tên biến (`so-dinh`, `cap-canh`) làm Julia phân tích cú pháp thành phép trừ toán học; đã khắc phục bằng cách dùng dấu gạch dưới `_`.
+
+- Xung đột kiểu struct trên REPL:** Khi sửa đổi `mutable struct TapChaCon` và gọi `include()` nạp lại trong cùng một phiên REPL, struct mới xung đột với struct cũ lưu trong RAM
+(`MethodError`); giải pháp là dùng `exit()` để mở phiên làm việc mới.
+
+# Lỗi môi trường thực thi và công cụ (VS Code / PowerShell)
+
+- Cơ chế thoát chuỗi của PowerShell:** Khi chạy lệnh một dòng `julia -e "include(\"...\")"`, PowerShell tự nuốt dấu ngoặc kép làm đường dẫn bị ngắt quãng; khắc phục bằng cách bọc dấu huyền hoặc chạy trực tiếp bằng tệp script.
+
+- Chế độ phím OVR (Overwrite):** Vô tình bấm phím `Insert` kích hoạt chế độ ghi đè, làm ký tự gõ mới xóa mất mã nguồn liền kề.
+
+- Bộ gõ tiếng Việt Telex:** Unikey tự động can thiệp sửa từ khóa lập trình (ví dụ biến `dsu` thành `dau`, `hop!` thành `Hợp`), làm trình biên dịch báo thiếu định danh.
+
+# Lỗi logic giải thuật và cài đặt thuật toán
+
+- Chỉ số vòng lặp trong Insertion Sort:** Gõ nhầm biến chỉ số lùi `i = i = 1` thay vì `j = i - 1` dẫn đến thiếu biến `j`, và nhầm `j = j + 1` làm tăng nguy cơ lặp vô tận.
+
+- Phép so sánh khóa sắp xếp:** Nhầm lẫn chỉ số `ds[i].v` với `ds[j].v` khi thực hiện phép so sánh trượt phần tử trong mảng cạnh.
+
+- Kiểu dữ liệu cấu trúc phụ:** Trong hàm thẩm định `kiem_tra_cay_mst`, ban đầu gán nhầm `dsu_phu = canh_chon` (danh sách cạnh) thay vì khởi tạo cấu trúc `TapChaCon(n)`, gây lỗi khi gọi hàm hợp nhất.
+
+# Lỗi trong quá trình kiểm thử tự động
+- Thừa từ khóa `end`:** Sót một từ khóa `end` ở dòng cuối cùng của tệp `runtests.jl` gây lỗi cú pháp toàn bộ tệp test.
+
+- Khoảng trắng trong cú pháp lệnh:** Khai báo biến `tong w = 0` (có khoảng trắng) và khoảng cách trong `using . Kruskal` gây lỗi ngắt dòng parser.
