@@ -39,7 +39,7 @@ Nguyennhutoan_DT081_Kruskal/
 
     ---
 
-# 3. NHẬT KÝ PHÁT TRIỂN VÀ CÁC LỖI KỸ THUẬT ĐÃ VƯỢT QUA
+# 3. NHẬT KÝ PHÁT TRIỂN VÀ CÁC LỖI KỸ THUẬT
 
 Trong quá trình trực tiếp thiết kế, cài đặt và kiểm thử giải thuật trên ngôn ngữ Julia (v1.12.6), tác giả đã ghi nhận và tự khắc phục các nhóm lỗi thực tế:
 
